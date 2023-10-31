@@ -1,2 +1,3 @@
-# borat-rs
-BORAT but in Rust.
+# BORAT: the BreakOut Room Availability Tracker
+
+Rust edition.
