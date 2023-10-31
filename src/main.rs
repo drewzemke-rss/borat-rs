@@ -1,7 +1,9 @@
-use std::{env, error::Error};
+use anyhow::{anyhow, Result};
+use std::env;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    let url = env::var("BORAT_URL")?;
+fn main() -> Result<()> {
+    let url =
+        env::var("BORAT_URL").map_err(|_| anyhow!("Missing environment variable `BORAT_URL`."))?;
 
     let response = reqwest::blocking::get(url)?.text()?;
     println!("response: {}", response);
