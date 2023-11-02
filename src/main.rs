@@ -1,4 +1,5 @@
 use anyhow::{anyhow, Result};
+use console::Term;
 use serde::Deserialize;
 use std::{env, fmt::Display};
 
@@ -49,10 +50,26 @@ fn main() -> Result<()> {
     let url =
         env::var("BORAT_URL").map_err(|_| anyhow!("Missing environment variable `BORAT_URL`."))?;
 
-    let response = reqwest::blocking::get(url)?.json::<BoratResponse>()?;
+    let stdout = Term::stdout();
 
-    println!("Breakout Room Statuses:");
-    println!("{}", response);
+    loop {
+        let response = reqwest::blocking::get(&url)?.json::<Vec<BreakoutRoomInfo>>()?;
+        stdout.clear_screen()?;
 
-    Ok(())
+        stdout.write_line("Breakout Room Statuses:")?;
+        response
+            .iter()
+            .for_each(|BreakoutRoomInfo { name, status }| {
+                let status_mark = match status {
+                    BreakoutRoomStatus::Open => "✓",
+                    BreakoutRoomStatus::Closed => "✗",
+                };
+
+                let s = format!(" {status_mark} {name}");
+                stdout.write_line(&s).unwrap();
+            });
+
+        // wait 30 seconds before reloading
+        std::thread::sleep(std::time::Duration::from_secs(30));
+    }
 }
