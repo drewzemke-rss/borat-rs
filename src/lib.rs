@@ -1,3 +1,5 @@
+#![warn(clippy::all, clippy::pedantic, clippy::unwrap_used)]
+
 use serde::Deserialize;
 
 /// The status (open or closed) of a breakout room.

@@ -1,3 +1,5 @@
+#![warn(clippy::all, clippy::pedantic, clippy::unwrap_used)]
+
 use anyhow::{anyhow, Result};
 use borat::{BreakoutRoomInfo, BreakoutRoomStatus};
 use clap::Parser;
@@ -8,7 +10,7 @@ use std::env;
 const OPEN_SYMBOL: &str = "✓";
 const CLOSED_SYMBOL: &str = "✗";
 
-/// BORAT -- the BreakOut Room Availability Tracker
+/// BORAT -- the Breakout Room Availability Tracker
 ///
 /// Displays a live* report of which RSS breakout rooms are available and
 /// which are occupied. (*Data may be up to one minute out-of-date.)
@@ -47,16 +49,14 @@ fn poll_and_print(url: &str, term: &Term) -> Result<()> {
     let response = reqwest::blocking::get(url)?.json::<Vec<BreakoutRoomInfo>>()?;
 
     term.write_line("Breakout Room Statuses:")?;
-    response
-        .iter()
-        .for_each(|BreakoutRoomInfo { name, status }| {
-            let s = match status {
-                BreakoutRoomStatus::Open => format!(" {} {name}", OPEN_SYMBOL.green()),
-                BreakoutRoomStatus::Closed => format!(" {} {name}", CLOSED_SYMBOL.red()),
-            };
+    for BreakoutRoomInfo { name, status } in response {
+        let s = match status {
+            BreakoutRoomStatus::Open => format!(" {} {name}", OPEN_SYMBOL.green()),
+            BreakoutRoomStatus::Closed => format!(" {} {name}", CLOSED_SYMBOL.red()),
+        };
 
-            term.write_line(&s).unwrap();
-        });
+        term.write_line(&s)?;
+    }
 
     Ok(())
 }
