@@ -1,7 +1,11 @@
 use anyhow::{anyhow, Result};
 use borat::{BreakoutRoomInfo, BreakoutRoomStatus};
+use colored::Colorize;
 use console::Term;
 use std::env;
+
+const OPEN_SYMBOL: &str = "✓";
+const CLOSED_SYMBOL: &str = "✗";
 
 fn main() -> Result<()> {
     let url =
@@ -17,12 +21,11 @@ fn main() -> Result<()> {
         response
             .iter()
             .for_each(|BreakoutRoomInfo { name, status }| {
-                let status_mark = match status {
-                    BreakoutRoomStatus::Open => "✓",
-                    BreakoutRoomStatus::Closed => "✗",
+                let s = match status {
+                    BreakoutRoomStatus::Open => format!(" {} {name}", OPEN_SYMBOL.green()),
+                    BreakoutRoomStatus::Closed => format!(" {} {name}", CLOSED_SYMBOL.red()),
                 };
 
-                let s = format!(" {status_mark} {name}");
                 stdout.write_line(&s).unwrap();
             });
 
