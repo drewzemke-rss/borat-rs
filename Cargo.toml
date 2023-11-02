@@ -1,8 +1,11 @@
 [package]
-name = "borat"
+name = "risk_and_safety_borat"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
 
+description = "An internal tool to enable Risk and Safety Solutions developers to monitor the availability of breakout rooms."
+repository = "https://github.com/drewzemke-rss/borat-rs"
 
 [dependencies]
 anyhow = "1.0.75"
@@ -12,3 +15,6 @@ console = "0.15.7"
 reqwest = { version = "0.11.22", features = ["blocking", "json"] }
 serde = { version = "1.0.190", features = ["derive"] }
 serde_json = "1.0.108"
+
+[lib]
+name = "borat"
