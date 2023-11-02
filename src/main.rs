@@ -1,50 +1,7 @@
 use anyhow::{anyhow, Result};
+use borat::{BreakoutRoomInfo, BreakoutRoomStatus};
 use console::Term;
-use serde::Deserialize;
-use std::{env, fmt::Display};
-
-#[derive(Debug, Deserialize)]
-struct BreakoutRoomInfo {
-    name: String,
-    status: BreakoutRoomStatus,
-}
-
-impl Display for BreakoutRoomInfo {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let s = format!("{}: {}", self.name, self.status);
-        s.fmt(f)
-    }
-}
-
-#[derive(Debug, Deserialize)]
-enum BreakoutRoomStatus {
-    #[serde(rename = "open")]
-    Open,
-
-    #[serde(rename = "closed")]
-    Closed,
-}
-
-impl Display for BreakoutRoomStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let s = match self {
-            BreakoutRoomStatus::Open => "open",
-            BreakoutRoomStatus::Closed => "closed",
-        };
-        s.fmt(f)
-    }
-}
-
-#[derive(Debug, Deserialize)]
-struct BoratResponse(Vec<BreakoutRoomInfo>);
-
-impl Display for BoratResponse {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let s: String = self.0.iter().map(|s| format!("  {s}\n")).collect();
-
-        s.fmt(f)
-    }
-}
+use std::env;
 
 fn main() -> Result<()> {
     let url =
